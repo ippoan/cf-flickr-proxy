@@ -7,9 +7,12 @@ name: branch-protection
 # "Administration: write" + "Contents: read" 権限を持つもの)。
 # `GITHUB_TOKEN` の `administration` scope は存在しないため代用不可。
 # 詳細は ci-workflows/branch-protection.yml の header コメント参照。
+#
+# trigger は `push: main` のみ (workflow_dispatch は置かない — admin PAT を
+# 受ける job を任意 ref から発火可能にしないため。HealthConnectReaderWorker
+# の caller と同じ)。
 
 on:
-  workflow_dispatch:
   push:
     branches: [main]
 

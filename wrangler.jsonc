@@ -7,6 +7,13 @@
   "observability": {
     "enabled": true
   },
+  // custom domain (`flickr-proxy.mtamaramu.com`) を生やしたので workers.dev は
+  // off。custom_domain=true で wrangler が DNS record + route を自動生成する
+  // (zone `mtamaramu.com` は既に CF account に存在)。
+  "workers_dev": false,
+  "routes": [
+    { "pattern": "flickr-proxy.mtamaramu.com", "custom_domain": true }
+  ],
   // secrets-inventory / HealthConnectReaderWorker と同じ **single-env 運用**
   // (staging = prod)。CI からは PR merge / tag push どちらも root config の
   // `npx wrangler deploy` を走らせる。Refs ippoan/cf-flickr-proxy#1

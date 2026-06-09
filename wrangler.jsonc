@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cf-flickr-proxy",
+  "main": "src/index.ts",
+  "account_id": "24b45709d060d957340180e995f0d373",
+  "compatibility_date": "2025-05-01",
+  "observability": {
+    "enabled": true
+  },
+  // secrets-inventory / HealthConnectReaderWorker と同じ **single-env 運用**
+  // (staging = prod)。CI からは PR merge / tag push どちらも root config の
+  // `npx wrangler deploy` を走らせる。Refs ippoan/cf-flickr-proxy#1
+  //
+  // secret binding は持たない。rust-flickr (staging) は --allow-unauthenticated
+  // で、認証情報 (FLICKR_* / DATABASE_URL) は全て Cloud Run 側の
+  // Secret Manager 参照 — Worker は素通しするだけ。
+  "vars": {
+    // proxy 先 rust-flickr (Cloud Run, staging = 実運用)
+    "RUST_FLICKR_URL": "https://rust-flickr-staging-747065218280.asia-northeast1.run.app",
+    // CORS を許可する front origin (comma 区切り)。front の本番 origin が
+    // 決まったらここに追記する。空でも proxy 自体は機能する (CORS ヘッダが
+    // 付かないだけ — Cloud Scheduler / curl は CORS 無関係)。
+    "ALLOWED_ORIGINS": "http://localhost:3000"
+  }
+}

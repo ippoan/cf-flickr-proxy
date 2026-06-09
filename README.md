@@ -56,7 +56,7 @@ secret binding は無し (rust-flickr 側が Secret Manager で完結)。
 Rust struct が SoT — rust-flickr 側で型が変わったら再コピーする。
 front から叩く場合は rust-flickr の
 [`clients/ts/client.ts`](https://github.com/ippoan/rust-flickr/blob/main/clients/ts/client.ts)
-(typed fetch ラッパ) に `baseUrl: "https://<この Worker の URL>"` を渡せばよい。
+(typed fetch ラッパ) に `baseUrl: "https://flickr-proxy.mtamaramu.com"` を渡せばよい。
 
 ## 開発
 
@@ -68,6 +68,8 @@ npm run dev        # ローカル起動 (wrangler dev)
 ```
 
 ## デプロイ
+
+公開 URL: **https://flickr-proxy.mtamaramu.com** (custom domain、workers.dev は off)
 
 CI (`.github/workflows/test.yml` → ippoan/ci-workflows `frontend-ci.yml`) が
 single-env 運用で deploy する:

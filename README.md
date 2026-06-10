@@ -20,6 +20,7 @@ front に公開するための **REST proxy / CORS** edge Worker。
 | `GET` | `/oauth/url` | Flickr OAuth1.0a 認可 URL 発行 (要 `x-organization-id`) |
 | `POST` | `/oauth/callback` | verifier → access token 交換 + 保存 (要 `x-organization-id`) |
 | `POST` | `/import` | 未検証 `cam_files.flickr_id` の検証 + 登録 (要 `x-organization-id`) |
+| `POST` | `/sync` | カメラ SD 巡回 → `cam_files` UPSERT → Flickr アップロード (要 `x-organization-id`)。**edge は ~100s で切られる**ため手動実行時は `{"upload_limit":小さめ}` を渡す。定期実行は Cloud Scheduler → Cloud Run 直 (proxy 非経由) |
 
 上記以外の path は 404、method 違いは 405。Worker から backend へは
 `x-organization-id` / `content-type` ヘッダ**だけ**を pass-through する

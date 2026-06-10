@@ -7,6 +7,13 @@
   "observability": {
     "enabled": true
   },
+  // Smart Placement: Worker の実行 colo を subrequest の宛先 (Cloud Run
+  // asia-northeast1) に近づける。2026-06-09 以降の新規 Cloud Run service の
+  // run.app hostname が US 側 Google Frontend に配布されない障害下でも、
+  // fetch が asia 発になれば届く (asia 経由の到達実績あり)。Refs #1
+  "placement": {
+    "mode": "smart"
+  },
   // custom domain (`flickr-proxy.mtamaramu.com`) を生やしたので workers.dev は
   // off。custom_domain=true で wrangler が DNS record + route を自動生成する
   // (zone `mtamaramu.com` は既に CF account に存在)。

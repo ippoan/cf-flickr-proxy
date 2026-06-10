@@ -15,7 +15,8 @@ front に公開するための **REST proxy / CORS** edge Worker。
 
 | method | path | backend の挙動 |
 |---|---|---|
-| `GET` | `/healthz` | version 付き health check |
+| `GET` | `/health` | version 付き health check。**外形監視はこちら** |
+| `GET` | `/healthz` | `/health` と同一 handler。**run.app / ghs の Google フロントが `/healthz` を外部からインターセプトして汎用 404 を返す**ため、proxy 経由でも upstream に届かない (罠。Refs #1) |
 | `GET` | `/oauth/url` | Flickr OAuth1.0a 認可 URL 発行 (要 `x-organization-id`) |
 | `POST` | `/oauth/callback` | verifier → access token 交換 + 保存 (要 `x-organization-id`) |
 | `POST` | `/import` | 未検証 `cam_files.flickr_id` の検証 + 登録 (要 `x-organization-id`) |

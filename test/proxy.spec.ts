@@ -251,6 +251,34 @@ describe("forwarding", () => {
     expect(((await res.json()) as ImportResponse).imported_count).toBe(2);
   });
 
+  it("proxies POST /sync with org header and passes the response through", async () => {
+    const { fn, calls } = mockFetch(() =>
+      upstreamJson(200, {
+        processed_dates: 1,
+        processed_hours: 2,
+        new_files: 3,
+        flickr_token_present: true,
+        uploaded_count: 3,
+        upload_errors: 0,
+        remaining_unuploaded: 0,
+        message: "Synced 1 dates, 2 hours, 3 files.",
+      }),
+    );
+    const res = await handleRequest(
+      new Request(`https://proxy.example.com/sync`, {
+        method: "POST",
+        headers: { "x-organization-id": ORG, "content-type": "application/json" },
+        body: JSON.stringify({ upload_limit: 5 }),
+      }),
+      env,
+      fn,
+    );
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { uploaded_count: number };
+    expect(body.uploaded_count).toBe(3);
+    expect(calls.calls[0][0]).toBe(`${BACKEND}/sync`);
+  });
+
   it("does not leak non-allowlisted request headers (cookie etc.) upstream", async () => {
     const { fn, calls } = mockFetch(() => upstreamJson(200, {}));
     await handleRequest(

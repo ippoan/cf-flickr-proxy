@@ -14,6 +14,10 @@ import type { Env } from "./env";
 
 /** proxy を許可する route。それ以外の path は 404、method 違いは 405 */
 const ROUTES: Record<string, "GET" | "POST"> = {
+  // 外形監視は /health を使う。/healthz は run.app / ghs の Google フロントが
+  // インターセプトして汎用 404 を返すため、proxy 経由でも upstream の応答が
+  // 得られない (Refs #1 cutover 検証、rust-flickr#8 で /health alias 追加)
+  "/health": "GET",
   "/healthz": "GET",
   "/oauth/url": "GET",
   "/oauth/callback": "POST",

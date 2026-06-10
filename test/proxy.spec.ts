@@ -130,6 +130,20 @@ describe("forwarding", () => {
     expect(calls.calls[0][0]).toBe(`${BACKEND}/healthz`);
   });
 
+  it("proxies GET /health (external health-check path) through", async () => {
+    const { fn, calls } = mockFetch(() =>
+      upstreamJson(200, { status: "ok", service: "rust-flickr", version: "0.1.0" }),
+    );
+    const res = await handleRequest(
+      new Request(`https://proxy.example.com/health`),
+      env,
+      fn,
+    );
+    expect(res.status).toBe(200);
+    expect(((await res.json()) as { service: string }).service).toBe("rust-flickr");
+    expect(calls.calls[0][0]).toBe(`${BACKEND}/health`);
+  });
+
   it("passes x-organization-id through on GET /oauth/url", async () => {
     const body: OauthUrlResponse = {
       authorization_url: "https://www.flickr.com/services/oauth/authorize?oauth_token=rt",

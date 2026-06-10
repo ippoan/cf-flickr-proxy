@@ -22,6 +22,10 @@ const ROUTES: Record<string, "GET" | "POST"> = {
   "/oauth/url": "GET",
   "/oauth/callback": "POST",
   "/import": "POST",
+  // カメラ SD 巡回 + Flickr upload (rust-flickr#9)。edge は 100s で切られるため
+  // 手動でここ経由で叩く時は upload_limit を小さく渡す (定期実行は
+  // Cloud Scheduler → Cloud Run 直 = proxy 非経由)
+  "/sync": "POST",
 };
 
 /** upstream へ pass-through する request ヘッダ (allowlist 式 — cookie 等は流さない) */
